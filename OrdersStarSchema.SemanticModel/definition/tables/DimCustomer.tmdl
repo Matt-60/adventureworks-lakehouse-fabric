@@ -1,0 +1,80 @@
+table DimCustomer
+	lineageTag: bc7bb6fe-0d26-4335-a9e7-b748f11e6d98
+	sourceLineageTag: [dbo].[DimCustomer]
+
+	column CustomerKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 74db8ecd-49b6-41cb-9ebb-09a7d90cffbb
+		sourceLineageTag: CustomerKey
+		summarizeBy: none
+		sourceColumn: CustomerKey
+
+		changedProperty = SummarizeBy
+
+		annotation SummarizationSetBy = User
+
+	column CustomerID
+		dataType: int64
+		formatString: 0
+		lineageTag: 7a1791b3-488d-47b2-8cd6-5fbff7ddf3d9
+		sourceLineageTag: CustomerID
+		summarizeBy: none
+		sourceColumn: CustomerID
+
+		changedProperty = SummarizeBy
+
+		annotation SummarizationSetBy = User
+
+	column FullName
+		dataType: string
+		lineageTag: d42fda84-3c19-49b7-8d6e-a193bdb959cc
+		sourceLineageTag: FullName
+		summarizeBy: none
+		sourceColumn: FullName
+
+		annotation SummarizationSetBy = Automatic
+
+	column Gender
+		dataType: string
+		lineageTag: 96941a17-fb1c-4979-a862-38daaa1ebc05
+		sourceLineageTag: Gender
+		summarizeBy: none
+		sourceColumn: Gender
+
+		annotation SummarizationSetBy = Automatic
+
+	column CompanyName
+		dataType: string
+		lineageTag: 1807af93-40b9-4fc8-863d-555949512dd3
+		sourceLineageTag: CompanyName
+		summarizeBy: none
+		sourceColumn: CompanyName
+
+		annotation SummarizationSetBy = Automatic
+
+	column SalesPerson
+		dataType: string
+		lineageTag: d1c3076c-b78c-46e4-9934-42415b06b11a
+		sourceLineageTag: SalesPerson
+		summarizeBy: none
+		sourceColumn: SalesPerson
+
+		annotation SummarizationSetBy = Automatic
+
+	column EmailAddress
+		dataType: string
+		lineageTag: ecba3c9f-a542-47be-bd7f-9c5f5bf3a4c0
+		sourceLineageTag: EmailAddress
+		summarizeBy: none
+		sourceColumn: EmailAddress
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DimCustomer = entity
+		mode: directLake
+		source
+			entityName: DimCustomer
+			schemaName: dbo
+			expressionSource: 'DirectLake - Gold'
+

@@ -1,0 +1,62 @@
+table DimFlags
+	lineageTag: f59cfde5-05af-4760-a31b-93f38f6abb6e
+	sourceLineageTag: [dbo].[DimFlags]
+
+	column FlagKey
+		dataType: int64
+		formatString: 0
+		lineageTag: f0688ab1-459b-45b6-b052-613f558bac7e
+		sourceLineageTag: FlagKey
+		summarizeBy: none
+		sourceColumn: FlagKey
+
+		changedProperty = SummarizeBy
+
+		annotation SummarizationSetBy = User
+
+	column IsDiscounted
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 089c6572-98c0-4549-8aca-c994f39c7671
+		sourceLineageTag: IsDiscounted
+		summarizeBy: none
+		sourceColumn: IsDiscounted
+
+		annotation SummarizationSetBy = Automatic
+
+	column Status
+		dataType: int64
+		formatString: 0
+		lineageTag: 58c213d3-0e6f-44f3-a926-10e78c401eb6
+		sourceLineageTag: Status
+		summarizeBy: none
+		sourceColumn: Status
+
+		annotation SummarizationSetBy = Automatic
+
+	column OnlineOrderFlag
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 89b5b88c-006f-408c-af37-8905006b0552
+		sourceLineageTag: OnlineOrderFlag
+		summarizeBy: none
+		sourceColumn: OnlineOrderFlag
+
+		annotation SummarizationSetBy = Automatic
+
+	column ShipMethod
+		dataType: string
+		lineageTag: 7ec4fd0a-6a01-4977-9a21-abe0239d4e0c
+		sourceLineageTag: ShipMethod
+		summarizeBy: none
+		sourceColumn: ShipMethod
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DimFlags = entity
+		mode: directLake
+		source
+			entityName: DimFlags
+			schemaName: dbo
+			expressionSource: 'DirectLake - Gold'
+

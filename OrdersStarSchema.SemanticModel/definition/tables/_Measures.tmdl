@@ -1,0 +1,105 @@
+table _Measures
+	lineageTag: 7fa2787d-3ecf-4768-a879-b5d91c2fcb4d
+
+	measure 'Total Revenue' = ```
+			
+			    SUM ( FactSales[LineTotal] )
+			```
+		lineageTag: 55de1894-f23b-4015-8e67-05a4259008ae
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Revenue at List Price' = ```
+			
+			    SUMX ( 
+			        FactSales, 
+			        FactSales[OrderQty] * RELATED ( DimProduct[ListPrice] ) 
+			    )
+			```
+		lineageTag: 3b0c3786-5c8d-4cc6-82fa-dc9a31321eb9
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Discount Amount' = ```
+			
+			    [Revenue at List Price] - [Total Revenue]
+			```
+		lineageTag: a4e28a9d-496e-4251-ab7f-53571174fe75
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Average Selling Price' = ```
+			
+			    DIVIDE ( 
+			        [Total Revenue], 
+			        SUM ( FactSales[OrderQty] ) 
+			    )
+			```
+		lineageTag: f2e03bb6-8970-4ec9-99a8-1f78f5b83bbd
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Discount Rate %' = ```
+			
+			    DIVIDE ( 
+			        [Discount Amount], 
+			        [Revenue at List Price] 
+			    )
+			```
+		lineageTag: 09bc9196-9ec7-4d9a-861a-e4c9eadd903c
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Orders Count' = ```
+			
+			    DISTINCTCOUNT ( FactSales[SalesOrderID] )
+			```
+		formatString: 0
+		lineageTag: 9ce3cfe7-7211-40b8-9a41-1336bf8b7089
+
+	measure 'Average Order Value' = ```
+			
+			    DIVIDE ( 
+			        [Total Revenue], 
+			        [Orders Count] 
+			    )
+			```
+		lineageTag: ad73678a-1782-41da-9c5b-e6b9e9d8b1c6
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Total Active Customers' = DISTINCTCOUNT(FactSales[CustomerKey])
+		formatString: 0
+		lineageTag: 56105f62-6e7f-4c99-a454-4aad21af8eef
+
+	measure 'Base Total Customers' = COUNT(DimCustomer[CustomerID])
+		formatString: 0
+		lineageTag: 6849eb9a-6214-4712-956e-441ad40cbcc5
+
+	measure 'Avg Order To Pay' = AVERAGE(FactSales[days_to_due])
+		lineageTag: 1a1c47be-8d80-4fd5-b174-52ea0845ff55
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Avg Order To Ship' = AVERAGE(FactSales[days_to_ship])
+		lineageTag: d39bbaa8-553c-4ca0-93f9-e8b7267ce2b2
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Column
+		formatString: 0
+		lineageTag: c1846472-7383-47b8-b2f8-e6a07757f2c2
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Column]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition _Measures = calculated
+		mode: import
+		source = Row("Column", BLANK())
+
+	annotation PBI_Id = 59e261a5712b41a490a0aeea0190667c
+
+	annotation 436ba87b-9c83-4389-a31b-ebd06a36be98 = {"Expression":""}
+

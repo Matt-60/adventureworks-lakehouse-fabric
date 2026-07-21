@@ -1,0 +1,111 @@
+table DimProduct
+	lineageTag: 414f89ab-fb0b-42c4-be18-17854e092b79
+	sourceLineageTag: [dbo].[DimProduct]
+
+	column ProductKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 097bb788-d31d-4a9f-97a9-52fd99880ab3
+		sourceLineageTag: ProductKey
+		summarizeBy: none
+		sourceColumn: ProductKey
+
+		changedProperty = SummarizeBy
+
+		annotation SummarizationSetBy = User
+
+	column ProductID
+		dataType: int64
+		formatString: 0
+		lineageTag: 7973343c-9ff9-40e9-9697-4902ebacbd19
+		sourceLineageTag: ProductID
+		summarizeBy: none
+		sourceColumn: ProductID
+
+		changedProperty = SummarizeBy
+
+		annotation SummarizationSetBy = User
+
+	column ProductName
+		dataType: string
+		lineageTag: d9a68d26-2b2f-4e9e-9914-41a2d9487fad
+		sourceLineageTag: ProductName
+		summarizeBy: none
+		sourceColumn: ProductName
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProductNumber
+		dataType: string
+		lineageTag: d961dd48-ab6e-4f6e-9b1e-8f4fbbcc0ca0
+		sourceLineageTag: ProductNumber
+		summarizeBy: none
+		sourceColumn: ProductNumber
+
+		annotation SummarizationSetBy = Automatic
+
+	column Color
+		dataType: string
+		lineageTag: 24d2e83e-33c6-43b4-be83-defafcb7ce19
+		sourceLineageTag: Color
+		summarizeBy: none
+		sourceColumn: Color
+
+		annotation SummarizationSetBy = Automatic
+
+	column StandardCost
+		dataType: double
+		lineageTag: 089a2527-45d6-420d-96f7-e4575db2498e
+		sourceLineageTag: StandardCost
+		summarizeBy: none
+		sourceColumn: StandardCost
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column ListPrice
+		dataType: double
+		lineageTag: f1a62d7e-da51-4eaa-ad57-81e16fbebad7
+		sourceLineageTag: ListPrice
+		summarizeBy: none
+		sourceColumn: ListPrice
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Size
+		dataType: string
+		lineageTag: ad3daff1-cee0-4a25-b65e-055b83ba0b74
+		sourceLineageTag: Size
+		summarizeBy: none
+		sourceColumn: Size
+
+		annotation SummarizationSetBy = Automatic
+
+	column CategoryName
+		dataType: string
+		lineageTag: 21d9b0be-6b2c-4610-bca9-a917728468c1
+		sourceLineageTag: CategoryName
+		summarizeBy: none
+		sourceColumn: CategoryName
+
+		annotation SummarizationSetBy = Automatic
+
+	column ModelName
+		dataType: string
+		lineageTag: 4c2c2875-b5d7-4ab0-b122-b456c2d9ccef
+		sourceLineageTag: ModelName
+		summarizeBy: none
+		sourceColumn: ModelName
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DimProduct = entity
+		mode: directLake
+		source
+			entityName: DimProduct
+			schemaName: dbo
+			expressionSource: 'DirectLake - Gold'
+

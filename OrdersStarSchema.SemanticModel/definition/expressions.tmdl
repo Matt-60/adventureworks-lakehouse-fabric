@@ -1,0 +1,11 @@
+expression 'DirectLake - Gold' =
+		let
+		    Source = AzureStorage.DataLake("https://onelake.dfs.fabric.microsoft.com/7ade5bd0-e9ec-4999-9dc0-1dfa63be203c/2db4b04e-d810-4f79-b787-9b149394a65f", [HierarchicalNavigation=true])
+		in
+		    Source
+	lineageTag: 5755a818-2756-4c9d-ae56-770768e0dbae
+
+	annotation PBI_IncludeFutureArtifacts = False
+
+	annotation PBI_RemovedChildren = [{"remoteItemId":{"analysisServicesObject":{"sourceName":"FactOrdersLines","sourceLineageTag":null}},"objectType":"Table"}]
+

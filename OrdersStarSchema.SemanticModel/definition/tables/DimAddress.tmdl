@@ -1,0 +1,101 @@
+table DimAddress
+	lineageTag: 69e755bc-0997-4ee0-97e5-0053c26abb6b
+	sourceLineageTag: [dbo].[DimAddress]
+
+	column AddressKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 0a490c31-2c6a-4d66-b961-f9bfd47f9055
+		sourceLineageTag: AddressKey
+		summarizeBy: none
+		sourceColumn: AddressKey
+
+		changedProperty = SummarizeBy
+
+		annotation SummarizationSetBy = User
+
+	column ShipAddressID
+		dataType: int64
+		formatString: 0
+		lineageTag: 5bd31f11-b635-4427-8aeb-70b87e8f07c8
+		sourceLineageTag: ShipAddressID
+		summarizeBy: none
+		sourceColumn: ShipAddressID
+
+		changedProperty = SummarizeBy
+
+		annotation SummarizationSetBy = User
+
+	column ShipCity
+		dataType: string
+		lineageTag: 0863f3c7-7d66-47ca-9793-b9b8b35bcf65
+		sourceLineageTag: ShipCity
+		summarizeBy: none
+		sourceColumn: ShipCity
+
+		annotation SummarizationSetBy = Automatic
+
+	column ShipStateProvince
+		dataType: string
+		lineageTag: 82572c27-e9b0-44da-bf59-b411a0f7e337
+		sourceLineageTag: ShipStateProvince
+		summarizeBy: none
+		sourceColumn: ShipStateProvince
+
+		annotation SummarizationSetBy = Automatic
+
+	column ShipCountryRegion
+		dataType: string
+		lineageTag: 7e90f24e-7034-44ba-8039-2ca2d64faa97
+		sourceLineageTag: ShipCountryRegion
+		summarizeBy: none
+		sourceColumn: ShipCountryRegion
+
+		annotation SummarizationSetBy = Automatic
+
+	column BillAddressID
+		dataType: int64
+		formatString: 0
+		lineageTag: 78744d8b-275d-4048-be84-9adc45c9b01d
+		sourceLineageTag: BillAddressID
+		summarizeBy: none
+		sourceColumn: BillAddressID
+
+		changedProperty = SummarizeBy
+
+		annotation SummarizationSetBy = User
+
+	column BillCity
+		dataType: string
+		lineageTag: 5503227f-8d92-4143-8ded-63e70ca835c0
+		sourceLineageTag: BillCity
+		summarizeBy: none
+		sourceColumn: BillCity
+
+		annotation SummarizationSetBy = Automatic
+
+	column BillStateProvince
+		dataType: string
+		lineageTag: c056cbc4-df36-4bd4-a57f-4270610a999e
+		sourceLineageTag: BillStateProvince
+		summarizeBy: none
+		sourceColumn: BillStateProvince
+
+		annotation SummarizationSetBy = Automatic
+
+	column BillCountryRegion
+		dataType: string
+		lineageTag: 1fe8fedd-a455-44eb-9d30-b7410170d86f
+		sourceLineageTag: BillCountryRegion
+		summarizeBy: none
+		sourceColumn: BillCountryRegion
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DimAddress = entity
+		mode: directLake
+		source
+			entityName: DimAddress
+			schemaName: dbo
+			expressionSource: 'DirectLake - Gold'
+

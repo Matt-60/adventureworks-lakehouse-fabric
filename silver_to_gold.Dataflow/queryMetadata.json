@@ -1,0 +1,59 @@
+{
+  "formatVersion": "202502",
+  "computeEngineSettings": {
+    "allowModernEvaluationEngine": true
+  },
+  "name": "silver_to_gold",
+  "queryGroups": [],
+  "documentLocale": "en-US",
+  "queriesMetadata": {
+    "DefaultDestination": {
+      "queryId": "a7d80185-b51e-4d0f-b9fa-b05663718ff5",
+      "queryName": "DefaultDestination",
+      "isHidden": true,
+      "loadEnabled": false
+    },
+    "DimDate": {
+      "queryId": "15200e15-b3e7-43f9-a467-14ee8daa6954",
+      "queryName": "DimDate",
+      "loadEnabled": false
+    },
+    "SilverOBT": {
+      "queryId": "d1084b40-5f09-4b51-b528-51a69c97df58",
+      "queryName": "SilverOBT",
+      "loadEnabled": false
+    },
+    "DimCustomer": {
+      "queryId": "a37fa6f7-9a11-4660-8573-d29ee0b84044",
+      "queryName": "DimCustomer",
+      "loadEnabled": false
+    },
+    "DimFlags": {
+      "queryId": "fdeece31-fa70-43bc-a4a5-1050a1a1ff5e",
+      "queryName": "DimFlags",
+      "loadEnabled": false
+    },
+    "DimProduct": {
+      "queryId": "a7df3c4c-5b5c-47ec-bd71-ee1ac6684aec",
+      "queryName": "DimProduct",
+      "loadEnabled": false
+    },
+    "DimAddress": {
+      "queryId": "10254c6d-a977-499a-a4d5-026f9f8cabbf",
+      "queryName": "DimAddress",
+      "loadEnabled": false
+    },
+    "FactSales": {
+      "queryId": "ae377946-a5e7-4bed-b1c4-77a4c7cb0120",
+      "queryName": "FactSales",
+      "loadEnabled": false
+    }
+  },
+  "connections": [
+    {
+      "path": "Lakehouse",
+      "kind": "Lakehouse",
+      "connectionId": "{\"ClusterId\":\"69c4ec43-9b97-4e9d-a4c5-8909a5b2a688\",\"DatasourceId\":\"c85951f5-6463-4fbe-80e0-a13016dce6cd\"}"
+    }
+  ]
+}

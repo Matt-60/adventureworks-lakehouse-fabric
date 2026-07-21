@@ -1,0 +1,322 @@
+{
+  "properties": {
+    "activities": [
+      {
+        "type": "ForEach",
+        "typeProperties": {
+          "items": {
+            "value": "@pipeline().parameters.tables",
+            "type": "Expression"
+          },
+          "activities": [
+            {
+              "type": "IfCondition",
+              "typeProperties": {
+                "expression": {
+                  "value": "@equals(item().load_type, 'incremental')",
+                  "type": "Expression"
+                },
+                "ifTrueActivities": [
+                  {
+                    "type": "Lookup",
+                    "typeProperties": {
+                      "source": {
+                        "type": "LakehouseTableSource",
+                        "sqlReaderQuery": {
+                          "value": "SELECT \n    ISNULL(MAX(ModifiedDate), '1900-01-01') AS last_watermark \nFROM bronze.@{item().sink}",
+                          "type": "Expression"
+                        },
+                        "partitionOption": "None"
+                      },
+                      "datasetSettings": {
+                        "type": "LakehouseTable",
+                        "schema": [],
+                        "connectionSettings": {
+                          "name": "Bronze",
+                          "properties": {
+                            "type": "Lakehouse",
+                            "typeProperties": {
+                              "artifactId": "2bfd2b12-4e80-bc22-4876-7c48a618a618",
+                              "workspaceId": "00000000-0000-0000-0000-000000000000",
+                              "rootFolder": "Tables"
+                            },
+                            "externalReferences": {
+                              "connection": "c85951f5-6463-4fbe-80e0-a13016dce6cd"
+                            },
+                            "annotations": []
+                          }
+                        },
+                        "annotations": []
+                      }
+                    },
+                    "policy": {
+                      "timeout": "0.1:00:00",
+                      "retry": 0,
+                      "retryIntervalInSeconds": 30,
+                      "secureInput": false,
+                      "secureOutput": false
+                    },
+                    "name": "Watermark_Lookup",
+                    "dependsOn": []
+                  },
+                  {
+                    "type": "Copy",
+                    "typeProperties": {
+                      "source": {
+                        "type": "AzureSqlSource",
+                        "sqlReaderQuery": {
+                          "value": "SELECT * FROM @{item().schema}.@{item().table}\nWHERE ModifiedDate > '@{activity('Watermark_Lookup').output.firstRow.last_watermark}'",
+                          "type": "Expression"
+                        },
+                        "partitionOption": "None",
+                        "queryTimeout": "02:00:00",
+                        "datasetSettings": {
+                          "type": "AzureSqlTable",
+                          "typeProperties": {
+                            "database": "AdventureWorksLT"
+                          },
+                          "schema": [],
+                          "externalReferences": {
+                            "connection": "efecadbf-161e-420a-8a84-39084eef3ac6"
+                          },
+                          "annotations": []
+                        }
+                      },
+                      "sink": {
+                        "type": "LakehouseTableSink",
+                        "tableActionOption": "Upsert",
+                        "applyVOrder": false,
+                        "upsertSettings": {
+                          "keys": {
+                            "value": "@array(item().key)",
+                            "type": "Expression"
+                          }
+                        },
+                        "datasetSettings": {
+                          "type": "LakehouseTable",
+                          "typeProperties": {
+                            "schema": "bronze",
+                            "table": {
+                              "value": "@{item().sink}",
+                              "type": "Expression"
+                            }
+                          },
+                          "schema": [],
+                          "connectionSettings": {
+                            "name": "Bronze",
+                            "properties": {
+                              "type": "Lakehouse",
+                              "typeProperties": {
+                                "artifactId": "2bfd2b12-4e80-bc22-4876-7c48a618a618",
+                                "workspaceId": "00000000-0000-0000-0000-000000000000",
+                                "rootFolder": "Tables"
+                              },
+                              "externalReferences": {
+                                "connection": "c85951f5-6463-4fbe-80e0-a13016dce6cd"
+                              },
+                              "annotations": []
+                            }
+                          },
+                          "annotations": []
+                        }
+                      },
+                      "translator": {
+                        "type": "TabularTranslator",
+                        "typeConversion": true,
+                        "typeConversionSettings": {
+                          "allowDataTruncation": true,
+                          "treatBooleanAsNumber": false
+                        }
+                      },
+                      "enableStaging": false
+                    },
+                    "policy": {
+                      "timeout": "0.1:00:00",
+                      "retry": 0,
+                      "retryIntervalInSeconds": 30,
+                      "secureInput": false,
+                      "secureOutput": false
+                    },
+                    "name": "Incremental_load",
+                    "dependsOn": [
+                      {
+                        "activity": "Watermark_Lookup",
+                        "dependencyConditions": [
+                          "Succeeded"
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "ifFalseActivities": [
+                  {
+                    "type": "Copy",
+                    "typeProperties": {
+                      "source": {
+                        "type": "AzureSqlSource",
+                        "partitionOption": "None",
+                        "queryTimeout": "02:00:00",
+                        "datasetSettings": {
+                          "type": "AzureSqlTable",
+                          "typeProperties": {
+                            "schema": {
+                              "value": "@{item().schema}",
+                              "type": "Expression"
+                            },
+                            "table": {
+                              "value": "@{item().table}",
+                              "type": "Expression"
+                            },
+                            "database": "AdventureWorksLT"
+                          },
+                          "schema": [],
+                          "externalReferences": {
+                            "connection": "efecadbf-161e-420a-8a84-39084eef3ac6"
+                          },
+                          "annotations": []
+                        }
+                      },
+                      "sink": {
+                        "type": "LakehouseTableSink",
+                        "tableActionOption": "OverwriteSchema",
+                        "applyVOrder": false,
+                        "partitionOption": "None",
+                        "datasetSettings": {
+                          "type": "LakehouseTable",
+                          "typeProperties": {
+                            "schema": "bronze",
+                            "table": {
+                              "value": "@{item().sink}",
+                              "type": "Expression"
+                            }
+                          },
+                          "schema": [],
+                          "connectionSettings": {
+                            "name": "Bronze",
+                            "properties": {
+                              "type": "Lakehouse",
+                              "typeProperties": {
+                                "artifactId": "2bfd2b12-4e80-bc22-4876-7c48a618a618",
+                                "workspaceId": "00000000-0000-0000-0000-000000000000",
+                                "rootFolder": "Tables"
+                              },
+                              "externalReferences": {
+                                "connection": "c85951f5-6463-4fbe-80e0-a13016dce6cd"
+                              },
+                              "annotations": []
+                            }
+                          },
+                          "annotations": []
+                        }
+                      },
+                      "translator": {
+                        "type": "TabularTranslator",
+                        "typeConversion": true,
+                        "typeConversionSettings": {
+                          "allowDataTruncation": true,
+                          "treatBooleanAsNumber": false
+                        }
+                      },
+                      "enableStaging": false
+                    },
+                    "policy": {
+                      "timeout": "0.1:00:00",
+                      "retry": 0,
+                      "retryIntervalInSeconds": 30,
+                      "secureInput": false,
+                      "secureOutput": false
+                    },
+                    "name": "full_load",
+                    "dependsOn": []
+                  }
+                ]
+              },
+              "name": "If Condition",
+              "description": "full_load vs incremental",
+              "dependsOn": []
+            }
+          ]
+        },
+        "name": "ForEach",
+        "dependsOn": []
+      }
+    ],
+    "parameters": {
+      "tables": {
+        "type": "array",
+        "defaultValue": [
+          {
+            "schema": "SalesLT",
+            "table": "SalesOrderHeader",
+            "sink": "SalesOrderHeader",
+            "key": "SalesOrderID",
+            "load_type": "incremental"
+          },
+          {
+            "schema": "SalesLT",
+            "table": "SalesOrderDetail",
+            "sink": "SalesOrderDetail",
+            "key": "SalesOrderDetailID",
+            "load_type": "incremental"
+          },
+          {
+            "schema": "SalesLT",
+            "table": "Customer",
+            "sink": "Customer",
+            "key": "CustomerID",
+            "load_type": "incremental"
+          },
+          {
+            "schema": "SalesLT",
+            "table": "CustomerAddress",
+            "sink": "CustomerAddress",
+            "key": "CustomerID",
+            "load_type": "full"
+          },
+          {
+            "schema": "SalesLT",
+            "table": "Address",
+            "sink": "Address",
+            "key": "AddressID",
+            "load_type": "full"
+          },
+          {
+            "schema": "SalesLT",
+            "table": "Product",
+            "sink": "Product",
+            "key": "ProductID",
+            "load_type": "full"
+          },
+          {
+            "schema": "SalesLT",
+            "table": "ProductCategory",
+            "sink": "ProductCategory",
+            "key": "ProductCategoryID",
+            "load_type": "full"
+          },
+          {
+            "schema": "SalesLT",
+            "table": "ProductModel",
+            "sink": "ProductModel",
+            "key": "ProductModelID",
+            "load_type": "full"
+          },
+          {
+            "schema": "SalesLT",
+            "table": "ProductDescription",
+            "sink": "ProductDescription",
+            "key": "ProductDescriptionID",
+            "load_type": "full"
+          },
+          {
+            "schema": "SalesLT",
+            "table": "ProductModelProductDescription",
+            "sink": "ProductModelProductDescription",
+            "key": "ProductModelID",
+            "load_type": "full"
+          }
+        ]
+      }
+    }
+  }
+}
