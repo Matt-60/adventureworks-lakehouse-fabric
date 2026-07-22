@@ -1,276 +1,134 @@
 # Fabric Data Lakehouse — AdventureWorksLT
 
-A Data Lakehouse project built in Microsoft Fabric on top of the AdventureWorksLT sample database (Azure SQL). Implements the Medallion architecture (Bronze → Silver → Gold) with a dimensional model (star schema) and Power BI reporting.
+A Data Lakehouse project built in Microsoft Fabric on top of the AdventureWorksLT sample database (Azure SQL). Implements the **Medallion architecture (Bronze → Silver → Gold)** with a dimensional model (star schema) and Power BI reporting.
+
+`Microsoft Fabric` · `OneLake` · `Data Pipelines` · `Star Schema` · `DAX` · `Direct Lake`
 
 ---
 
 ## 🎯 Business Goal
 
-This project simulates a bicycle sales company needing a single, reliable model of sales performance — by product, customer, and region — built directly on top of its operational (OLTP) database. Along the way, the project surfaces a real data quality issue (header totals not matching line-item totals) and makes an explicit, documented modeling decision about which number to trust, exactly the kind of judgment call required when moving raw transactional data into an analytics-ready model.
+Simulates a bicycle sales company needing one reliable model of sales performance — by product, customer, and region — built directly on top of its operational (OLTP) database. Along the way, the project surfaces a real data quality issue (header totals not matching line-item totals) and makes an explicit, documented decision about which number to trust — the kind of judgment call required when moving raw transactional data into an analytics-ready model.
 
----
-
-## Architecture
+## 🏗️ Architecture
 
 ```
 Azure SQL (AdventureWorksLT)
          │
          ▼
-   Data Pipeline
-   (For Each + Copy Activity)
+   Data Pipeline (For Each + Copy Activity)
          │
          ▼
 ┌─────────────────────────────────────────────────────┐
-│                     OneLake                         │
-│                                                     │
-│  Bronze Lakehouse      Silver Lakehouse    Gold      │
-│  ─────────────────     ────────────────   ──────    │
-│  Raw data 1:1      ──► OBT_Sales       ──► Fact     │
-│  (Delta Parquet)       (One Big Table)     & Dims   │
+│                     OneLake                          │
+│  Bronze Lakehouse   →  Silver Lakehouse   →  Gold     │
+│  Raw data 1:1           OBT_Sales             Fact    │
+│  (Delta Parquet)        (One Big Table)      & Dims   │
 └─────────────────────────────────────────────────────┘
          │
          ▼
     Power BI (Direct Lake)
 ```
 
----
+| Layer | Purpose |
+|---|---|
+| **Bronze** | Raw data loaded 1:1 from `SalesLT` schema via parameterized Data Pipeline, no transformations |
+| **Silver** | Single wide table (`OBT_Sales`) joining all Bronze tables, grain = one order line item, cleansing applied |
+| **Gold** | Star schema (Fact + Dimensions), served via SQL Analytics Endpoint / Warehouse |
 
-## Data Source
-
-**Azure SQL Database — AdventureWorksLT**
-
-The database simulates a transactional system (OLTP) for a bicycle sales company. The `SalesLT` schema contains 10 business tables:
-
-| Table | Description | Type |
-|---|---|---|
-| `SalesLT.SalesOrderHeader` | Order headers | Fact |
-| `SalesLT.SalesOrderDetail` | Order line items | Fact |
-| `SalesLT.Customer` | Customers | Dimension |
-| `SalesLT.Address` | Addresses | Dimension |
-| `SalesLT.CustomerAddress` | Customer–address mapping | Bridge |
-| `SalesLT.Product` | Products | Dimension |
-| `SalesLT.ProductCategory` | Product categories | Dimension |
-| `SalesLT.ProductModel` | Product models | Dimension |
-| `SalesLT.ProductDescription` | Product descriptions | Dimension |
-| `SalesLT.ProductModelProductDescription` | Model–description mapping | Bridge |
-
----
-
-## Medallion Layers
-
-### Bronze — Raw Data
-
-Lakehouse storing data 1:1 from the source with no transformations. Data is loaded incrementally via a Data Pipeline.
-
-**Tables:**
+## ⭐ Star Schema
 
 ```
-bronze_customer
-bronze_address
-bronze_customer_address
-bronze_sales_order_header
-bronze_sales_order_detail
-bronze_product
-bronze_product_category
-bronze_product_model
-bronze_product_description
-bronze_product_model_description
+        Dim_Date
+           │
+Dim_Customer ─┤
+           │
+Dim_Address ──┼── Fact_Sales
+           │
+Dim_Product ──┤
+           │
+        Dim_Flags
 ```
 
-**Pipeline Configuration:**
+<details>
+<summary><b>📋 Full table schemas (click to expand)</b></summary>
 
-The `TableList` variable (type Array) drives the list of tables to load:
+### Data Source — Azure SQL AdventureWorksLT (`SalesLT` schema, 10 tables)
 
-```json
-[
-  {"src_schema": "SalesLT", "src_table": "Customer",                       "dst_table": "bronze_customer"},
-  {"src_schema": "SalesLT", "src_table": "Address",                        "dst_table": "bronze_address"},
-  {"src_schema": "SalesLT", "src_table": "CustomerAddress",                "dst_table": "bronze_customer_address"},
-  {"src_schema": "SalesLT", "src_table": "SalesOrderHeader",               "dst_table": "bronze_sales_order_header"},
-  {"src_schema": "SalesLT", "src_table": "SalesOrderDetail",               "dst_table": "bronze_sales_order_detail"},
-  {"src_schema": "SalesLT", "src_table": "Product",                        "dst_table": "bronze_product"},
-  {"src_schema": "SalesLT", "src_table": "ProductCategory",                "dst_table": "bronze_product_category"},
-  {"src_schema": "SalesLT", "src_table": "ProductModel",                   "dst_table": "bronze_product_model"},
-  {"src_schema": "SalesLT", "src_table": "ProductDescription",             "dst_table": "bronze_product_description"},
-  {"src_schema": "SalesLT", "src_table": "ProductModelProductDescription", "dst_table": "bronze_product_model_description"}
-]
-```
-
-### Silver — Cleansing and OBT
-
-Lakehouse containing a single wide table `OBT_Sales` built by joining all Bronze tables. Grain: one order line item (`SalesOrderDetailID`).
-
-**Modelling decisions:**
-
-- Measures from `SalesOrderHeader` (`SubTotal`, `TaxAmt`, `TotalDue`) **excluded** — inconsistent with `LineTotal` from `SalesOrderDetail` (data quality issue detected across all 32 orders)
-- `LineTotal` from `SalesOrderDetail` is the single source of truth for sales value
-- `price_to_list` column = `UnitPrice / ListPrice` — ratio of transaction price to list price
-- `load_date` metadata column added for auditability
-
-### Gold — Dimensional Model
-
-Star schema built from `OBT_Silver`. Accessible via the SQL Analytics Endpoint or Warehouse.
-
----
-
-## Dimensional Model (Star Schema)
-
-```
-                    Dim_Date
-                       │
-         Dim_Customer ─┤
-                       │
-         Dim_Address ──┼── Fact_Sales
-                       │
-         Dim_Product ──┤
-                       │
-                    Dim_Flags
-```
+| Table | Type |
+|---|---|
+| `SalesOrderHeader` | Fact |
+| `SalesOrderDetail` | Fact |
+| `Customer` | Dimension |
+| `Address` | Dimension |
+| `CustomerAddress` | Bridge |
+| `Product` | Dimension |
+| `ProductCategory` | Dimension |
+| `ProductModel` | Dimension |
+| `ProductDescription` | Dimension |
+| `ProductModelProductDescription` | Bridge |
 
 ### Fact_Sales
 
 | Column | Type | Description |
 |---|---|---|
-| `SalesOrderID` | INT | Degenerate dimension — order ID |
-| `SalesOrderDetailID` | INT | Degenerate dimension — line item ID |
-| `DateKey` | INT | FK → Dim_Date |
-| `CustomerKey` | INT | FK → Dim_Customer (surrogate key) |
-| `ProductKey` | INT | FK → Dim_Product (surrogate key) |
-| `AddressKey` | INT | FK → Dim_Address (surrogate key) |
-| `OrderQty` | INT | Quantity ordered |
-| `UnitPrice` | DECIMAL | Transaction price |
-| `ListPrice` | DECIMAL | Catalogue price (snapshot at transaction date) |
-| `UnitPriceDiscount` | DECIMAL | Discount applied |
-| `LineTotal` | DECIMAL | Line item value |
+| `SalesOrderID` / `SalesOrderDetailID` | INT | Degenerate dimensions |
+| `DateKey`, `CustomerKey`, `ProductKey`, `AddressKey` | INT | Foreign keys |
+| `OrderQty`, `UnitPrice`, `ListPrice`, `UnitPriceDiscount`, `LineTotal` | DECIMAL | Transaction measures |
 | `price_to_list` | DECIMAL | UnitPrice / ListPrice |
 
-### Dim_Date
+### Dimensions
 
-Generated synthetically — a date sequence with calendar attributes.
+- **Dim_Date** — synthetic calendar table (Year, Quarter, Month, MonthName, DayOfWeek, IsWeekend)
+- **Dim_Customer** — from `Customer` (CustomerID, name, email, company, sales person)
+- **Dim_Product** — from `Product` + `ProductCategory` + `ProductModel` (name, category, model, color, size, weight, list price, standard cost)
+- **Dim_Address** — from `Address` (city, state/province, country, postal code)
+- **Dim_Flags** — `OnlineOrderFlag` extracted from the fact table
 
-| Column | Description |
-|---|---|
-| `DateKey` (PK) | Format YYYYMMDD |
-| `Date` | Full date |
-| `Year`, `Quarter`, `Month`, `Day` | Calendar attributes |
-| `MonthName`, `DayOfWeek` | Descriptive labels |
-| `IsWeekend` | Boolean flag |
+</details>
 
-### Dim_Customer
-
-Source: `SalesLT.Customer`
-
-| Column | Description |
-|---|---|
-| `CustomerKey` (PK) | Surrogate key |
-| `CustomerID` | Natural key (retained) |
-| `FirstName`, `LastName` | Name |
-| `EmailAddress` | Email |
-| `CompanyName` | Company |
-| `SalesPerson` | Assigned sales person |
-
-### Dim_Product
-
-Source: `SalesLT.Product` + `ProductCategory` + `ProductModel`
-
-| Column | Description |
-|---|---|
-| `ProductKey` (PK) | Surrogate key |
-| `ProductID` | Natural key |
-| `ProductName` | Product name |
-| `ProductNumber` | Catalogue number |
-| `Category` | Category (denormalised) |
-| `Model` | Model (denormalised) |
-| `Color`, `Size`, `Weight` | Physical attributes |
-| `ListPrice` | Catalogue price |
-| `StandardCost` | Manufacturing cost |
-
-### Dim_Address
-
-Source: `SalesLT.Address`
-
-| Column | Description |
-|---|---|
-| `AddressKey` (PK) | Surrogate key |
-| `AddressID` | Natural key |
-| `City` | City |
-| `StateProvince` | State or province |
-| `CountryRegion` | Country |
-| `PostalCode` | Postal code |
-
-### Dim_Flags
-
-Flag attributes extracted from the fact table.
-
-| Column | Description |
-|---|---|
-| `OnlineOrderFlag` | Online vs. in-store order |
-
----
-
-## DAX Measures
+<details>
+<summary><b>📐 DAX measures (click to expand)</b></summary>
 
 ```dax
--- 1. Core revenue
 Total Revenue = SUM ( FactSales[LineTotal] )
 
--- 2. Revenue at catalogue prices
 Revenue at List Price =
     SUMX ( FactSales, FactSales[OrderQty] * RELATED ( DimProduct[ListPrice] ) )
 
--- 3. Total discount given
 Discount Amount = [Revenue at List Price] - [Total Revenue]
 
--- 4. Average selling price
-Average Selling Price =
-    DIVIDE ( [Total Revenue], SUM ( FactSales[OrderQty] ) )
+Average Selling Price = DIVIDE ( [Total Revenue], SUM ( FactSales[OrderQty] ) )
 
--- 5. Discount rate
-Discount Rate % =
-    DIVIDE ( [Discount Amount], [Revenue at List Price] )
+Discount Rate % = DIVIDE ( [Discount Amount], [Revenue at List Price] )
 
--- 6. Number of orders
 Orders Count = DISTINCTCOUNT ( FactSales[SalesOrderID] )
 
--- 7. Average order value (AOV)
 Average Order Value = DIVIDE ( [Total Revenue], [Orders Count] )
 
--- 8. Revenue same period last year
 Revenue Previous Year =
     CALCULATE ( [Total Revenue], SAMEPERIODLASTYEAR ( DimDate[Date] ) )
 
--- 9. Year-over-year growth
 Revenue YoY % =
     DIVIDE ( [Total Revenue] - [Revenue Previous Year], [Revenue Previous Year] )
 
--- 10. Year-to-date revenue
 Revenue YTD = TOTALYTD ( [Total Revenue], DimDate[Date] )
 ```
 
----
+</details>
 
-## Known Data Quality Issues
+## 🧠 Key Decision: Data Quality Issue
 
-**SubTotal vs LineTotal discrepancy**
+`SalesOrderHeader.SubTotal` doesn't match `SUM(SalesOrderDetail.LineTotal)` for all 32 orders (differences up to ~18,692 units) — an intentional AdventureWorksLT quirk simulating real-world issues like historical imports or post-close price changes.
 
-`SalesOrderHeader.SubTotal` does not match `SUM(SalesOrderDetail.LineTotal)` for all 32 orders in AdventureWorksLT. Differences reach up to ~18,692 units.
+**Decision:** `LineTotal` from `SalesOrderDetail` is the single source of truth. `SubTotal`, `TaxAmt`, and `TotalDue` from the header are excluded from the model.
 
-This is an intentional characteristic of the sample database, simulating real-world data quality issues (e.g. historical imports, manual corrections, price changes after order closure).
+<details>
+<summary><b>⚙️ Requirements & Fabric workspace structure (click to expand)</b></summary>
 
-Decision taken: `LineTotal` from `SalesOrderDetail` is the single source of truth. `SubTotal`, `TaxAmt`, and `TotalDue` from `SalesOrderHeader` are excluded from the model.
+**Requirements:** Microsoft Fabric (Trial or F2+ capacity) · Azure SQL Database with AdventureWorksLT · Power BI Desktop
 
----
-
-## Requirements
-
-- Microsoft Fabric (Trial or F2+ capacity)
-- Azure SQL Database with AdventureWorksLT sample data
-- Power BI Desktop (for local model development)
-
----
-
-## Fabric Workspace Structure
-
+**Workspace structure:**
 ```
 Workspace: AdventureWorksLT-DW
 ├── lh_bronze          (Lakehouse)
@@ -280,3 +138,5 @@ Workspace: AdventureWorksLT-DW
 ├── df_silver_obt      (Dataflow Gen2)
 └── AdventureWorks     (Power BI Report)
 ```
+
+</details>
