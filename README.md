@@ -4,6 +4,12 @@ A Data Lakehouse project built in Microsoft Fabric on top of the AdventureWorksL
 
 ---
 
+## 🎯 Business Goal
+
+This project simulates a bicycle sales company needing a single, reliable model of sales performance — by product, customer, and region — built directly on top of its operational (OLTP) database. Along the way, the project surfaces a real data quality issue (header totals not matching line-item totals) and makes an explicit, documented modeling decision about which number to trust, exactly the kind of judgment call required when moving raw transactional data into an analytics-ready model.
+
+---
+
 ## Architecture
 
 ```
