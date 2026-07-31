@@ -36,18 +36,19 @@ Azure SQL (AdventureWorksLT)
 | **Silver** | Single wide table (`OBT_Sales`) joining all Bronze tables, grain = one order line item, cleansing applied |
 | **Gold** | Star schema (Fact + Dimensions), served via SQL Analytics Endpoint / Warehouse |
 
+## 🏗️ Orchestration
+<img width="774" height="231" alt="image" src="https://github.com/user-attachments/assets/3b638994-b7f3-4653-968d-f75332dd4774" />
+1. initial load
+2. If_inremental - yes lookup watermark + incremental+upsert
+3. if_incremental - no - full load overwwrite
+4. notebook bronze to silver (building OBT using pyspark then using data wrnagler to profile data and clean them)
+5. silver to gold datagen2 fact and dims
+
 ## ⭐ Star Schema
 
-```
-        Dim_Date
-           │
-Dim_Customer ─┤
-           │
-Dim_Address ──┼── Fact_Sales
-           │
-Dim_Product ──┤
-           │
-        Dim_Flags
+
+<img width="921" height="569" alt="image" src="https://github.com/user-attachments/assets/c86a59d7-2da3-4592-90a2-87ed844ddf8d" />
+
 ```
 
 <details>
