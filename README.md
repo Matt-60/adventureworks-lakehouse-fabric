@@ -16,14 +16,14 @@ Simulates a bicycle sales company needing one reliable model of sales performanc
 Azure SQL (AdventureWorksLT)
          │
          ▼
-   Data Pipeline (For Each + Copy Activity)
+   Data Pipeline (watermark-driven, incremental upsert / full load)
          │
          ▼
 ┌─────────────────────────────────────────────────────┐
 │                     OneLake                          │
-│  Bronze Lakehouse   →  Silver Lakehouse   →  Gold     │
-│  Raw data 1:1           OBT_Sales             Fact    │
-│  (Delta Parquet)        (One Big Table)      & Dims   │
+│  Bronze Lakehouse  → Notebook →  Silver   → Dataflow  │
+│  Raw data 1:1        (PySpark)   OBT_Sales   Gen2 →   │
+│  (Delta Parquet)                             Gold     │
 └─────────────────────────────────────────────────────┘
          │
          ▼
@@ -32,24 +32,28 @@ Azure SQL (AdventureWorksLT)
 
 | Layer | Purpose |
 |---|---|
-| **Bronze** | Raw data loaded 1:1 from `SalesLT` schema via parameterized Data Pipeline, no transformations |
-| **Silver** | Single wide table (`OBT_Sales`) joining all Bronze tables, grain = one order line item, cleansing applied |
-| **Gold** | Star schema (Fact + Dimensions), served via SQL Analytics Endpoint / Warehouse |
+| **Bronze** | Raw data loaded from `SalesLT` schema via a watermark-driven incremental pipeline (full load on first run, incremental upsert afterward), no transformations |
+| **Silver** | Single wide table (`OBT_Sales`) built in a PySpark notebook, joining all Bronze tables (grain = one order line item); profiled & cleansed using Data Wrangler |
+| **Gold** | Star schema (Fact + Dimensions) built via Dataflow Gen2, served via SQL Analytics Endpoint / Warehouse |
 
-## 🏗️ Orchestration
-<img width="774" height="231" alt="image" src="https://github.com/user-attachments/assets/3b638994-b7f3-4653-968d-f75332dd4774" />
-1. initial load
-2. If_inremental - yes lookup watermark + incremental+upsert
-3. if_incremental - no - full load overwwrite
-4. notebook bronze to silver (building OBT using pyspark then using data wrnagler to profile data and clean them)
-5. silver to gold datagen2 fact and dims
+## ⚙️ Orchestration
+
+<img width="774" height="231" alt="orchestration pipeline" src="https://github.com/user-attachments/assets/3b638994-b7f3-4653-968d-f75332dd4774" />
+
+A watermark-driven pipeline handles Bronze ingestion incrementally, followed by notebook-based Silver transformation and Dataflow Gen2 Gold modeling:
+
+1. **Initial load** — first run performs a full load of all `SalesLT` tables into Bronze
+2. **Incremental branch (`if_incremental`)** — on subsequent runs, a Lookup activity checks the last watermark value:
+   - **Yes (incremental)** → pulls only new/changed records since the last watermark and **upserts** them into Bronze
+   - **No** → falls back to a full load, overwriting Bronze
+3. **Notebook: Bronze → Silver** — a PySpark notebook builds `OBT_Sales` by joining all Bronze tables, then uses **Data Wrangler** to profile and clean the data
+4. **Dataflow Gen2: Silver → Gold** — builds the Fact and Dimension tables from `OBT_Sales`
 
 ## ⭐ Star Schema
 
+<img width="921" height="569" alt="star schema" src="https://github.com/user-attachments/assets/c86a59d7-2da3-4592-90a2-87ed844ddf8d" />
 
-<img width="921" height="569" alt="image" src="https://github.com/user-attachments/assets/c86a59d7-2da3-4592-90a2-87ed844ddf8d" />
-
-```
+`Fact_Sales` at the center, surrounded by `Dim_Date`, `Dim_Customer`, `Dim_Product`, `Dim_Address`, and `Dim_Flags`.
 
 <details>
 <summary><b>📋 Full table schemas (click to expand)</b></summary>
@@ -132,11 +136,12 @@ Revenue YTD = TOTALYTD ( [Total Revenue], DimDate[Date] )
 **Workspace structure:**
 ```
 Workspace: AdventureWorksLT-DW
-├── lh_bronze          (Lakehouse)
-├── lh_silver          (Lakehouse)
-├── wh_gold            (Warehouse)
-├── pl_bronze_load     (Data Pipeline)
-├── df_silver_obt      (Dataflow Gen2)
+├── lh_bronze              (Lakehouse)
+├── lh_silver              (Lakehouse)
+├── wh_gold                (Warehouse)
+├── pl_bronze_incremental  (Data Pipeline — watermark-driven load)
+├── nb_bronze_to_silver    (Notebook — PySpark + Data Wrangler)
+├── df_silver_to_gold      (Dataflow Gen2)
 └── AdventureWorks     (Power BI Report)
 ```
 
