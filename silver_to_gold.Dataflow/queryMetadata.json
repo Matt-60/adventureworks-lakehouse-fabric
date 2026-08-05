@@ -18,11 +18,6 @@
       "queryName": "DimDate",
       "loadEnabled": false
     },
-    "SilverOBT": {
-      "queryId": "d1084b40-5f09-4b51-b528-51a69c97df58",
-      "queryName": "SilverOBT",
-      "loadEnabled": false
-    },
     "DimCustomer": {
       "queryId": "a37fa6f7-9a11-4660-8573-d29ee0b84044",
       "queryName": "DimCustomer",
@@ -46,6 +41,11 @@
     "FactSales": {
       "queryId": "ae377946-a5e7-4bed-b1c4-77a4c7cb0120",
       "queryName": "FactSales",
+      "loadEnabled": false
+    },
+    "SilverOBT": {
+      "queryId": "8156f7c6-fae8-4779-b7de-d20372bfc4d7",
+      "queryName": "SilverOBT",
       "loadEnabled": false
     }
   },

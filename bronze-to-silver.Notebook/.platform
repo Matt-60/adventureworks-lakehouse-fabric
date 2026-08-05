@@ -1,11 +1,11 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
   "metadata": {
-    "type": "DataPipeline",
-    "displayName": "Data_ingestion"
+    "type": "Notebook",
+    "displayName": "bronze-to-silver"
   },
   "config": {
     "version": "2.0",
-    "logicalId": "4955ea05-6a02-9443-4c32-c741103b0272"
+    "logicalId": "b1a92c04-ab86-adff-46da-e2dd58b21975"
   }
 }

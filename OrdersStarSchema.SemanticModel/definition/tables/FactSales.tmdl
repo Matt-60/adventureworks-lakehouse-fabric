@@ -62,30 +62,6 @@ table FactSales
 
 		annotation SummarizationSetBy = User
 
-	column ShipAddressKey
-		dataType: int64
-		formatString: 0
-		lineageTag: a5fb6628-e48a-4a7f-8cb5-30eb2d83ea7c
-		sourceLineageTag: ShipAddressKey
-		summarizeBy: none
-		sourceColumn: ShipAddressKey
-
-		changedProperty = SummarizeBy
-
-		annotation SummarizationSetBy = User
-
-	column BillAddressKey
-		dataType: int64
-		formatString: 0
-		lineageTag: 72ac0765-1dce-47e3-abcf-ec0842398997
-		sourceLineageTag: BillAddressKey
-		summarizeBy: none
-		sourceColumn: BillAddressKey
-
-		changedProperty = SummarizeBy
-
-		annotation SummarizationSetBy = User
-
 	column OrderDate
 		dataType: dateTime
 		formatString: General Date
@@ -207,6 +183,26 @@ table FactSales
 		sourceLineageTag: gold_processed_date
 		summarizeBy: none
 		sourceColumn: gold_processed_date
+
+		annotation SummarizationSetBy = Automatic
+
+	column ShipAddressKey
+		dataType: int64
+		formatString: 0
+		lineageTag: dff2b02d-2fd9-427f-a48e-4e3925c54d50
+		sourceLineageTag: ShipAddressKey
+		summarizeBy: none
+		sourceColumn: ShipAddressKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column BillAddressKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 8f561994-1c19-4ffd-8887-35a8b6947001
+		sourceLineageTag: BillAddressKey
+		summarizeBy: count
+		sourceColumn: BillAddressKey
 
 		annotation SummarizationSetBy = Automatic
 

@@ -1,12 +1,3 @@
-relationship e63f1a36-5604-11f7-a116-aa41d993fc35
-	fromColumn: FactSales.ShipAddressKey
-	toColumn: DimAddress.AddressKey
-
-relationship 89cc5315-5736-e346-caf0-3306e7a844a6
-	isActive: false
-	fromColumn: FactSales.BillAddressKey
-	toColumn: DimAddress.AddressKey
-
 relationship b34708dc-cf61-29f4-66b1-7e765c05bfd3
 	fromColumn: FactSales.FlagKey
 	toColumn: DimFlags.FlagKey
@@ -32,4 +23,13 @@ relationship 44a6b52e-879c-08dd-edb6-3ccefedc18eb
 relationship bc557b5d-8fd0-ebf3-0c37-abf9fdd7fe97
 	fromColumn: FactSales.CustomerKey
 	toColumn: DimCustomer.CustomerKey
+
+relationship ad984648-6dfb-cd5a-0a1c-117916b87aaf
+	fromColumn: FactSales.ShipAddressKey
+	toColumn: DimAddress.AddressKey
+
+relationship 2733b03f-9969-f103-695a-9d7341deaae5
+	isActive: false
+	fromColumn: FactSales.BillAddressKey
+	toColumn: DimAddress.AddressKey
 

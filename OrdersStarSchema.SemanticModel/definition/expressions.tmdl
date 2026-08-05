@@ -7,5 +7,5 @@ expression 'DirectLake - Gold' =
 
 	annotation PBI_IncludeFutureArtifacts = False
 
-	annotation PBI_RemovedChildren = [{"remoteItemId":{"analysisServicesObject":{"sourceName":"FactOrdersLines","sourceLineageTag":null}},"objectType":"Table"}]
+	annotation PBI_RemovedChildren = [{"remoteItemId":{"analysisServicesObject":{"sourceName":null,"sourceLineageTag":"[dbo].[SilverOBT]"}},"objectType":"Table"}]
 

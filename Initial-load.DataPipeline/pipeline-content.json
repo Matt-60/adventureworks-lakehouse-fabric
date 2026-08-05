@@ -86,12 +86,12 @@
                 "secureInput": false,
                 "secureOutput": false
               },
-              "name": "Copy_data_full_copy",
+              "name": "Copy_data_full",
               "dependsOn": []
             }
           ]
         },
-        "name": "ForEach1",
+        "name": "for_each_table",
         "dependsOn": []
       }
     ],
