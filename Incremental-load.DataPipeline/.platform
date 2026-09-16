@@ -1,11 +1,11 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
   "metadata": {
-    "type": "Dataflow",
-    "displayName": "silver_to_gold"
+    "type": "DataPipeline",
+    "displayName": "Incremental-load"
   },
   "config": {
     "version": "2.0",
-    "logicalId": "06b3a73d-99c6-b341-424b-f948e66ad009"
+    "logicalId": "f20bb49e-209f-4353-8e2e-ac9c674a17fb"
   }
 }
