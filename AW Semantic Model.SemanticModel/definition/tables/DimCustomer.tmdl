@@ -4,6 +4,7 @@ table DimCustomer
 
 	column CustomerID
 		dataType: int64
+		isHidden
 		formatString: 0
 		sourceProviderType: int
 		lineageTag: cd44748c-d7f6-42d3-a2cc-cb14a80498bd
@@ -11,8 +12,9 @@ table DimCustomer
 		summarizeBy: none
 		sourceColumn: CustomerID
 
-		annotation SummarizationSetBy = Automatic
+		annotation SummarizationSetBy = User
 
+	/// Contact person at the customer company.
 	column FullName
 		dataType: string
 		sourceProviderType: varchar(8000)
@@ -21,8 +23,9 @@ table DimCustomer
 		summarizeBy: none
 		sourceColumn: FullName
 
-		annotation SummarizationSetBy = Automatic
+		annotation SummarizationSetBy = User
 
+	/// Customer = reseller company (B2B).
 	column CompanyName
 		dataType: string
 		sourceProviderType: varchar(8000)
@@ -31,8 +34,9 @@ table DimCustomer
 		summarizeBy: none
 		sourceColumn: CompanyName
 
-		annotation SummarizationSetBy = Automatic
+		annotation SummarizationSetBy = User
 
+	/// Adventure Works sales representative managing the account.
 	column SalesPerson
 		dataType: string
 		sourceProviderType: varchar(8000)
@@ -41,8 +45,9 @@ table DimCustomer
 		summarizeBy: none
 		sourceColumn: SalesPerson
 
-		annotation SummarizationSetBy = Automatic
+		annotation SummarizationSetBy = User
 
+	/// Derived from the contact person's title (Mr./Ms./Mrs.); not stored in the source.
 	column Gender
 		dataType: string
 		sourceProviderType: varchar(10)
@@ -51,7 +56,7 @@ table DimCustomer
 		summarizeBy: none
 		sourceColumn: Gender
 
-		annotation SummarizationSetBy = Automatic
+		annotation SummarizationSetBy = User
 
 	partition DimCustomer = entity
 		mode: directLake

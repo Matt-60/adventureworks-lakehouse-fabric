@@ -8,24 +8,26 @@ table FactSales
 		sourceProviderType: int
 		lineageTag: 6f8d8937-462d-4688-9f98-0a927067c358
 		sourceLineageTag: SalesOrderID
-		summarizeBy: count
+		summarizeBy: none
 		sourceColumn: SalesOrderID
 
-		annotation SummarizationSetBy = Automatic
+		annotation SummarizationSetBy = User
 
 	column SalesOrderDetailID
 		dataType: int64
+		isHidden
 		formatString: 0
 		sourceProviderType: int
 		lineageTag: 3bbd07ef-6275-4db4-a08a-db4e8c1e5ac5
 		sourceLineageTag: SalesOrderDetailID
-		summarizeBy: count
+		summarizeBy: none
 		sourceColumn: SalesOrderDetailID
 
-		annotation SummarizationSetBy = Automatic
+		annotation SummarizationSetBy = User
 
 	column CustomerID
 		dataType: int64
+		isHidden
 		formatString: 0
 		sourceProviderType: int
 		lineageTag: ab6d177d-54a0-461c-b081-2e966e55b780
@@ -33,10 +35,11 @@ table FactSales
 		summarizeBy: none
 		sourceColumn: CustomerID
 
-		annotation SummarizationSetBy = Automatic
+		annotation SummarizationSetBy = User
 
 	column ProductID
 		dataType: int64
+		isHidden
 		formatString: 0
 		sourceProviderType: int
 		lineageTag: 61598cac-54ae-4b65-a7c9-70da646f08df
@@ -44,10 +47,11 @@ table FactSales
 		summarizeBy: none
 		sourceColumn: ProductID
 
-		annotation SummarizationSetBy = Automatic
+		annotation SummarizationSetBy = User
 
 	column ShipAddressID
 		dataType: int64
+		isHidden
 		formatString: 0
 		sourceProviderType: int
 		lineageTag: 646e2569-ecf3-458b-ad33-f9c7fc685705
@@ -55,21 +59,23 @@ table FactSales
 		summarizeBy: none
 		sourceColumn: ShipAddressID
 
-		annotation SummarizationSetBy = Automatic
+		annotation SummarizationSetBy = User
 
 	column BillAddressID
 		dataType: int64
+		isHidden
 		formatString: 0
 		sourceProviderType: int
 		lineageTag: a339b406-af35-4768-b815-86e5c256914f
 		sourceLineageTag: BillAddressID
-		summarizeBy: count
+		summarizeBy: none
 		sourceColumn: BillAddressID
 
-		annotation SummarizationSetBy = Automatic
+		annotation SummarizationSetBy = User
 
 	column FlagKey
 		dataType: int64
+		isHidden
 		formatString: 0
 		sourceProviderType: bigint
 		lineageTag: 010d8f54-ab64-4b56-9c0b-fda5a84fcc82
@@ -77,133 +83,144 @@ table FactSales
 		summarizeBy: none
 		sourceColumn: FlagKey
 
-		annotation SummarizationSetBy = Automatic
+		annotation SummarizationSetBy = User
 
 	column OrderDate
 		dataType: dateTime
-		formatString: General Date
+		isHidden
+		formatString: Short Date
 		sourceProviderType: date
 		lineageTag: a54600ca-9b4a-494c-8b03-5e394f1d0d2d
 		sourceLineageTag: OrderDate
 		summarizeBy: none
 		sourceColumn: OrderDate
 
-		annotation SummarizationSetBy = Automatic
+		annotation SummarizationSetBy = User
 
 	column ShipDate
 		dataType: dateTime
-		formatString: General Date
+		isHidden
+		formatString: Short Date
 		sourceProviderType: date
 		lineageTag: b43ffada-396e-42d1-81b5-55a5ccc79878
 		sourceLineageTag: ShipDate
 		summarizeBy: none
 		sourceColumn: ShipDate
 
-		annotation SummarizationSetBy = Automatic
+		annotation SummarizationSetBy = User
 
 	column DueDate
 		dataType: dateTime
-		formatString: General Date
+		isHidden
+		formatString: Short Date
 		sourceProviderType: date
 		lineageTag: 4972a61f-dc01-4f0c-9c41-e26de78d5bfb
 		sourceLineageTag: DueDate
 		summarizeBy: none
 		sourceColumn: DueDate
 
-		annotation SummarizationSetBy = Automatic
+		annotation SummarizationSetBy = User
 
 	column OrderQty
 		dataType: int64
+		isHidden
 		formatString: 0
 		sourceProviderType: smallint
 		lineageTag: 68921ffa-300f-4127-a78d-f494f6ed4402
 		sourceLineageTag: OrderQty
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: OrderQty
 
-		annotation SummarizationSetBy = Automatic
+		annotation SummarizationSetBy = User
 
 	column UnitPrice
 		dataType: double
+		isHidden
 		sourceProviderType: decimal(19, 4)
 		lineageTag: 41bb5a02-9cb0-404e-a606-d00e5f9bb503
 		sourceLineageTag: UnitPrice
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: UnitPrice
 
-		annotation SummarizationSetBy = Automatic
+		annotation SummarizationSetBy = User
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
 	column UnitPriceDiscount
 		dataType: double
+		isHidden
 		sourceProviderType: decimal(19, 4)
 		lineageTag: a55b01a5-570a-4a02-bb78-edf8d0362709
 		sourceLineageTag: UnitPriceDiscount
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: UnitPriceDiscount
 
-		annotation SummarizationSetBy = Automatic
+		annotation SummarizationSetBy = User
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
 	column LineTotal
 		dataType: double
+		isHidden
 		sourceProviderType: decimal(38, 6)
 		lineageTag: 0b6519b3-c72d-481b-832d-06381be10dd7
 		sourceLineageTag: LineTotal
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: LineTotal
 
-		annotation SummarizationSetBy = Automatic
+		annotation SummarizationSetBy = User
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
 	column LineTotalAtListPrice
 		dataType: double
+		isHidden
 		sourceProviderType: decimal(25, 4)
 		lineageTag: 28f6c72a-d988-4cc8-b86d-d0809100598a
 		sourceLineageTag: LineTotalAtListPrice
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: LineTotalAtListPrice
 
-		annotation SummarizationSetBy = Automatic
+		annotation SummarizationSetBy = User
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
 	column LineCost
 		dataType: double
+		isHidden
 		sourceProviderType: decimal(25, 4)
 		lineageTag: 506ecfdb-445c-4a23-a7d8-4700e3ea79ff
 		sourceLineageTag: LineCost
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: LineCost
 
-		annotation SummarizationSetBy = Automatic
+		annotation SummarizationSetBy = User
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
 	column DaysToShip
 		dataType: int64
+		isHidden
 		formatString: 0
 		sourceProviderType: int
 		lineageTag: 2f12fb3b-0856-49de-8a26-ed3b0d1d908f
 		sourceLineageTag: DaysToShip
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: DaysToShip
 
-		annotation SummarizationSetBy = Automatic
+		annotation SummarizationSetBy = User
 
 	column DaysToDue
 		dataType: int64
+		isHidden
 		formatString: 0
 		sourceProviderType: int
 		lineageTag: 6c3c03ec-c67e-4806-a282-239135b066b0
 		sourceLineageTag: DaysToDue
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: DaysToDue
 
-		annotation SummarizationSetBy = Automatic
+		annotation SummarizationSetBy = User
 
 	partition FactSales = entity
 		mode: directLake

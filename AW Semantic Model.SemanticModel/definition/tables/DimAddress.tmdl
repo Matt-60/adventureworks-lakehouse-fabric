@@ -4,6 +4,7 @@ table DimAddress
 
 	column AddressID
 		dataType: int64
+		isHidden
 		formatString: 0
 		sourceProviderType: int
 		lineageTag: 1533d216-01c0-455c-b15c-f8522e4b7b94
@@ -11,7 +12,7 @@ table DimAddress
 		summarizeBy: none
 		sourceColumn: AddressID
 
-		annotation SummarizationSetBy = Automatic
+		annotation SummarizationSetBy = User
 
 	column City
 		dataType: string
@@ -21,7 +22,7 @@ table DimAddress
 		summarizeBy: none
 		sourceColumn: City
 
-		annotation SummarizationSetBy = Automatic
+		annotation SummarizationSetBy = User
 
 	column StateProvince
 		dataType: string
@@ -31,7 +32,7 @@ table DimAddress
 		summarizeBy: none
 		sourceColumn: StateProvince
 
-		annotation SummarizationSetBy = Automatic
+		annotation SummarizationSetBy = User
 
 	column CountryRegion
 		dataType: string
@@ -41,7 +42,7 @@ table DimAddress
 		summarizeBy: none
 		sourceColumn: CountryRegion
 
-		annotation SummarizationSetBy = Automatic
+		annotation SummarizationSetBy = User
 
 	column PostalCode
 		dataType: string
@@ -51,7 +52,7 @@ table DimAddress
 		summarizeBy: none
 		sourceColumn: PostalCode
 
-		annotation SummarizationSetBy = Automatic
+		annotation SummarizationSetBy = User
 
 	partition DimAddress = entity
 		mode: directLake

@@ -4,6 +4,7 @@ table DimFlags
 
 	column FlagKey
 		dataType: int64
+		isHidden
 		formatString: 0
 		sourceProviderType: bigint
 		lineageTag: 6e8179c3-c97c-41f9-9736-74bb20fe63d8
@@ -11,10 +12,11 @@ table DimFlags
 		summarizeBy: none
 		sourceColumn: FlagKey
 
-		annotation SummarizationSetBy = Automatic
+		annotation SummarizationSetBy = User
 
 	column Status
 		dataType: int64
+		isHidden
 		formatString: 0
 		sourceProviderType: smallint
 		lineageTag: 2f6c5be7-d18d-47e2-8f0b-d695303ba9af
@@ -22,8 +24,9 @@ table DimFlags
 		summarizeBy: none
 		sourceColumn: Status
 
-		annotation SummarizationSetBy = Automatic
+		annotation SummarizationSetBy = User
 
+	/// Order status label from SalesOrderHeader.Status.
 	column StatusName
 		dataType: string
 		sourceProviderType: varchar(11)
@@ -32,10 +35,11 @@ table DimFlags
 		summarizeBy: none
 		sourceColumn: StatusName
 
-		annotation SummarizationSetBy = Automatic
+		annotation SummarizationSetBy = User
 
 	column OnlineOrderFlag
 		dataType: int64
+		isHidden
 		formatString: 0
 		sourceProviderType: int
 		lineageTag: 72722093-540b-4f16-bf4d-da8d7fef17ed
@@ -43,7 +47,7 @@ table DimFlags
 		summarizeBy: none
 		sourceColumn: OnlineOrderFlag
 
-		annotation SummarizationSetBy = Automatic
+		annotation SummarizationSetBy = User
 
 	column OrderChannel
 		dataType: string
@@ -53,7 +57,7 @@ table DimFlags
 		summarizeBy: none
 		sourceColumn: OrderChannel
 
-		annotation SummarizationSetBy = Automatic
+		annotation SummarizationSetBy = User
 
 	column ShipMethod
 		dataType: string
@@ -63,10 +67,11 @@ table DimFlags
 		summarizeBy: none
 		sourceColumn: ShipMethod
 
-		annotation SummarizationSetBy = Automatic
+		annotation SummarizationSetBy = User
 
 	column IsDiscounted
 		dataType: int64
+		isHidden
 		formatString: 0
 		sourceProviderType: int
 		lineageTag: 68564cf6-200f-4617-b102-d9c24bd84bab
@@ -74,7 +79,7 @@ table DimFlags
 		summarizeBy: none
 		sourceColumn: IsDiscounted
 
-		annotation SummarizationSetBy = Automatic
+		annotation SummarizationSetBy = User
 
 	column PriceType
 		dataType: string
@@ -84,7 +89,7 @@ table DimFlags
 		summarizeBy: none
 		sourceColumn: PriceType
 
-		annotation SummarizationSetBy = Automatic
+		annotation SummarizationSetBy = User
 
 	partition DimFlags = entity
 		mode: directLake

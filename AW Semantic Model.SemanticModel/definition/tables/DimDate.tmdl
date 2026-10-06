@@ -6,14 +6,14 @@ table DimDate
 	column Date
 		dataType: dateTime
 		isKey
-		formatString: General Date
+		formatString: Short Date
 		sourceProviderType: date
 		lineageTag: e657a5f9-d11a-4feb-8f46-57dfc7f3787b
 		sourceLineageTag: Date
 		summarizeBy: none
 		sourceColumn: Date
 
-		annotation SummarizationSetBy = Automatic
+		annotation SummarizationSetBy = User
 
 	column Year
 		dataType: int64
@@ -24,7 +24,7 @@ table DimDate
 		summarizeBy: none
 		sourceColumn: Year
 
-		annotation SummarizationSetBy = Automatic
+		annotation SummarizationSetBy = User
 
 	column Quarter
 		dataType: string
@@ -34,10 +34,11 @@ table DimDate
 		summarizeBy: none
 		sourceColumn: Quarter
 
-		annotation SummarizationSetBy = Automatic
+		annotation SummarizationSetBy = User
 
 	column MonthNumber
 		dataType: int64
+		isHidden
 		formatString: 0
 		sourceProviderType: int
 		lineageTag: 81ed3719-ad06-4787-9cd0-f6279f7041b5
@@ -45,30 +46,33 @@ table DimDate
 		summarizeBy: none
 		sourceColumn: MonthNumber
 
-		annotation SummarizationSetBy = Automatic
+		annotation SummarizationSetBy = User
 
 	column MonthName
 		dataType: string
+		sortByColumn: MonthNumber
 		sourceProviderType: varchar(10)
 		lineageTag: 0a1469bd-8684-4802-9d91-ccccd49986b3
 		sourceLineageTag: MonthName
 		summarizeBy: none
 		sourceColumn: MonthName
 
-		annotation SummarizationSetBy = Automatic
+		annotation SummarizationSetBy = User
 
 	column MonthShort
 		dataType: string
+		sortByColumn: MonthNumber
 		sourceProviderType: varchar(3)
 		lineageTag: c1d77b60-0036-491c-8a07-12f22da7d2c6
 		sourceLineageTag: MonthShort
 		summarizeBy: none
 		sourceColumn: MonthShort
 
-		annotation SummarizationSetBy = Automatic
+		annotation SummarizationSetBy = User
 
 	column YearMonthNumber
 		dataType: int64
+		isHidden
 		formatString: 0
 		sourceProviderType: int
 		lineageTag: 050ae81d-49e4-4c79-8eda-b8707d257f40
@@ -76,17 +80,18 @@ table DimDate
 		summarizeBy: none
 		sourceColumn: YearMonthNumber
 
-		annotation SummarizationSetBy = Automatic
+		annotation SummarizationSetBy = User
 
 	column YearMonth
 		dataType: string
+		sortByColumn: YearMonthNumber
 		sourceProviderType: varchar(7)
 		lineageTag: baa38067-4b2c-434b-8bda-2e3d7dcb791e
 		sourceLineageTag: YearMonth
 		summarizeBy: none
 		sourceColumn: YearMonth
 
-		annotation SummarizationSetBy = Automatic
+		annotation SummarizationSetBy = User
 
 	column Day
 		dataType: int64
@@ -97,10 +102,11 @@ table DimDate
 		summarizeBy: none
 		sourceColumn: Day
 
-		annotation SummarizationSetBy = Automatic
+		annotation SummarizationSetBy = User
 
 	column WeekdayNumber
 		dataType: int64
+		isHidden
 		formatString: 0
 		sourceProviderType: int
 		lineageTag: 76789c75-bcf0-4058-80e4-3a0bd7a40351
@@ -108,17 +114,18 @@ table DimDate
 		summarizeBy: none
 		sourceColumn: WeekdayNumber
 
-		annotation SummarizationSetBy = Automatic
+		annotation SummarizationSetBy = User
 
 	column DayName
 		dataType: string
+		sortByColumn: WeekdayNumber
 		sourceProviderType: varchar(10)
 		lineageTag: daa7ae97-d3ee-4335-b989-637b57927da7
 		sourceLineageTag: DayName
 		summarizeBy: none
 		sourceColumn: DayName
 
-		annotation SummarizationSetBy = Automatic
+		annotation SummarizationSetBy = User
 
 	column IsWeekend
 		dataType: boolean
@@ -129,7 +136,7 @@ table DimDate
 		summarizeBy: none
 		sourceColumn: IsWeekend
 
-		annotation SummarizationSetBy = Automatic
+		annotation SummarizationSetBy = User
 
 	partition DimDate = entity
 		mode: directLake

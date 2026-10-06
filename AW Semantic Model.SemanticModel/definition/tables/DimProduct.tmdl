@@ -4,6 +4,7 @@ table DimProduct
 
 	column ProductID
 		dataType: int64
+		isHidden
 		formatString: 0
 		sourceProviderType: int
 		lineageTag: e5f14c39-d0ac-4eae-8bc7-d9fc40e00614
@@ -11,7 +12,7 @@ table DimProduct
 		summarizeBy: none
 		sourceColumn: ProductID
 
-		annotation SummarizationSetBy = Automatic
+		annotation SummarizationSetBy = User
 
 	column ProductName
 		dataType: string
@@ -21,7 +22,7 @@ table DimProduct
 		summarizeBy: none
 		sourceColumn: ProductName
 
-		annotation SummarizationSetBy = Automatic
+		annotation SummarizationSetBy = User
 
 	column ProductNumber
 		dataType: string
@@ -31,7 +32,7 @@ table DimProduct
 		summarizeBy: none
 		sourceColumn: ProductNumber
 
-		annotation SummarizationSetBy = Automatic
+		annotation SummarizationSetBy = User
 
 	column Color
 		dataType: string
@@ -41,7 +42,7 @@ table DimProduct
 		summarizeBy: none
 		sourceColumn: Color
 
-		annotation SummarizationSetBy = Automatic
+		annotation SummarizationSetBy = User
 
 	column Size
 		dataType: string
@@ -51,7 +52,7 @@ table DimProduct
 		summarizeBy: none
 		sourceColumn: Size
 
-		annotation SummarizationSetBy = Automatic
+		annotation SummarizationSetBy = User
 
 	column Weight
 		dataType: decimal
@@ -62,7 +63,7 @@ table DimProduct
 		summarizeBy: none
 		sourceColumn: Weight
 
-		annotation SummarizationSetBy = Automatic
+		annotation SummarizationSetBy = User
 
 		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
 
@@ -74,7 +75,7 @@ table DimProduct
 		summarizeBy: none
 		sourceColumn: StandardCost
 
-		annotation SummarizationSetBy = Automatic
+		annotation SummarizationSetBy = User
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
@@ -86,7 +87,7 @@ table DimProduct
 		summarizeBy: none
 		sourceColumn: ListPrice
 
-		annotation SummarizationSetBy = Automatic
+		annotation SummarizationSetBy = User
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
@@ -98,8 +99,9 @@ table DimProduct
 		summarizeBy: none
 		sourceColumn: ModelName
 
-		annotation SummarizationSetBy = Automatic
+		annotation SummarizationSetBy = User
 
+	/// Category assigned to the product in the source.
 	column Subcategory
 		dataType: string
 		sourceProviderType: varchar(8000)
@@ -108,8 +110,9 @@ table DimProduct
 		summarizeBy: none
 		sourceColumn: Subcategory
 
-		annotation SummarizationSetBy = Automatic
+		annotation SummarizationSetBy = User
 
+	/// Top-level product category (parent of Subcategory).
 	column Category
 		dataType: string
 		sourceProviderType: varchar(8000)
@@ -118,8 +121,9 @@ table DimProduct
 		summarizeBy: none
 		sourceColumn: Category
 
-		annotation SummarizationSetBy = Automatic
+		annotation SummarizationSetBy = User
 
+	/// True when the product has no SellEndDate.
 	column IsActive
 		dataType: boolean
 		formatString: """TRUE"";""TRUE"";""FALSE"""
@@ -129,7 +133,7 @@ table DimProduct
 		summarizeBy: none
 		sourceColumn: IsActive
 
-		annotation SummarizationSetBy = Automatic
+		annotation SummarizationSetBy = User
 
 	partition DimProduct = entity
 		mode: directLake
