@@ -1,0 +1,122 @@
+table _Measures
+	lineageTag: fcc9e654-ed25-4128-bcfd-10e4cdb508e8
+
+	/// Sum of order line amounts (LineTotal is the source of truth)
+	measure 'Total Revenue' = SUM ( FactSales[LineTotal] )
+		formatString: #,0.00
+		displayFolder: 1. Sales
+		lineageTag: 79c6180d-d19c-46e8-8ab8-62521ed8b745
+
+	measure 'Units Sold' = SUM ( FactSales[OrderQty] )
+		formatString: #,0
+		displayFolder: 1. Sales
+		lineageTag: 8b2ed0ea-85a7-4e3c-aa19-bc758e41b01f
+
+	measure 'Orders Count' = DISTINCTCOUNT ( FactSales[SalesOrderID] )
+		formatString: #,0
+		displayFolder: 1. Sales
+		lineageTag: 5bd8e5b7-4b41-4079-9fc3-e8b5f1bb915f
+
+	measure 'Average Order Value' = DIVIDE ( [Total Revenue], [Orders Count] )
+		formatString: #,0.00
+		displayFolder: 1. Sales
+		lineageTag: b14ccd9d-68ff-48b1-96b1-b400ea3e7973
+
+	measure 'Average Selling Price' = DIVIDE ( [Total Revenue], [Units Sold] )
+		formatString: #,0.00
+		displayFolder: 1. Sales
+		lineageTag: 3a2917de-2fbb-4c72-96d8-53af04640f7a
+
+	measure 'Revenue at List Price' = SUM ( FactSales[LineTotalAtListPrice] )
+		formatString: #,0.00
+		displayFolder: 2. Discounts
+		lineageTag: 63a7e5f8-b723-4f6a-8ba3-8a7282d82d1e
+
+	measure 'Discount Amount' = [Revenue at List Price] - [Total Revenue]
+		formatString: #,0.00
+		displayFolder: 2. Discounts
+		lineageTag: ba44a944-7bfb-453e-be7c-c1306f9f2d21
+
+	measure 'Discount Rate %' = DIVIDE ( [Discount Amount], [Revenue at List Price] )
+		formatString: 0.0%
+		displayFolder: 2. Discounts
+		lineageTag: 7c6e7b7b-d126-4760-8351-2217bc5d5449
+
+	/// Cost at current StandardCost (approximation)
+	measure 'Total Cost' = SUM ( FactSales[LineCost] )
+		formatString: #,0.00
+		displayFolder: 3. Profitability
+		lineageTag: 25dc1b5f-3feb-4a85-890c-11705cb4271b
+
+	measure 'Gross Profit' = [Total Revenue] - [Total Cost]
+		formatString: #,0.00
+		displayFolder: 3. Profitability
+		lineageTag: 6efbbb42-198e-494b-a744-e5133d1ca274
+
+	measure 'Gross Margin %' = DIVIDE ( [Gross Profit], [Total Revenue] )
+		formatString: 0.0%
+		displayFolder: 3. Profitability
+		lineageTag: 92e1370d-59ef-4f14-9b1d-e6311ceb20a9
+
+	measure 'Active Customers' = DISTINCTCOUNT ( FactSales[CustomerID] )
+		formatString: #,0
+		displayFolder: 4. Customers
+		lineageTag: 449aafe6-c982-4d8e-bddd-931c4086247a
+
+	measure 'Total Customers' = COUNTROWS ( DimCustomer )
+		formatString: #,0
+		displayFolder: 4. Customers
+		lineageTag: 72ffd908-d5ec-4e8d-8e39-0f2fdfa242ca
+
+	measure 'Customer Activation %' = DIVIDE ( [Active Customers], [Total Customers] )
+		formatString: 0.0%
+		displayFolder: 4. Customers
+		lineageTag: 48a26830-0700-4a3f-903a-0a77738843e8
+
+	measure 'Revenue per Customer' = DIVIDE ( [Total Revenue], [Active Customers] )
+		formatString: #,0.00
+		displayFolder: 4. Customers
+		lineageTag: 2e4e04d3-20b0-445d-95c1-235a3453d75e
+
+	measure 'Products Sold' = DISTINCTCOUNT ( FactSales[ProductID] )
+		formatString: #,0
+		displayFolder: 5. Products & Mix
+		lineageTag: f0ba5ce2-f875-4311-beb0-4d6ec7cd98d6
+
+	measure 'Revenue Share %' = DIVIDE ( [Total Revenue], CALCULATE ( [Total Revenue], ALLSELECTED () ) )
+		formatString: 0.0%
+		displayFolder: 5. Products & Mix
+		lineageTag: e60ae2f8-3dae-4f47-a5dd-c6ab6f5bce79
+
+	measure 'Online Revenue %' = DIVIDE ( CALCULATE ( [Total Revenue], DimFlags[OrderChannel] = "Online" ), [Total Revenue] )
+		formatString: 0.0%
+		displayFolder: 5. Products & Mix
+		lineageTag: 086ddc76-9b1f-4a97-96b8-77457d653a54
+
+	measure 'Avg Days to Ship' = AVERAGE ( FactSales[DaysToShip] )
+		formatString: 0.0
+		displayFolder: 6. Fulfillment
+		lineageTag: 115f1044-607d-43f2-8a39-3231576d9b1b
+
+	measure 'Avg Days to Due' = AVERAGE ( FactSales[DaysToDue] )
+		formatString: 0.0
+		displayFolder: 6. Fulfillment
+		lineageTag: b8bc43e9-5b79-4e53-9fe4-4bdd50810915
+
+	/// Revenue attributed to the bill-to address (inactive role-playing relationship)
+	measure 'Revenue by Bill-To Region' = CALCULATE ( [Total Revenue], USERELATIONSHIP ( FactSales[BillAddressID], DimAddress[AddressID] ) )
+		formatString: #,0.00
+		displayFolder: 7. Regions
+		lineageTag: fc21bab8-e29f-46cc-876c-7e009dfc2905
+
+	column Value
+		isHidden
+		lineageTag: 4c28a109-defe-4770-957d-c51750329c07
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Value]
+
+	partition _Measures = calculated
+		mode: import
+		source = Row("Value", BLANK())
+

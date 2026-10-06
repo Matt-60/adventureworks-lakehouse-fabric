@@ -1,0 +1,35 @@
+relationship b6040d9e-748c-1b02-ac38-b044ad1d1974
+	fromColumn: FactSales.ShipAddressID
+	toColumn: DimAddress.AddressID
+
+relationship 0df8fb36-5e7c-7386-756a-a5dbc67f1fa2
+	isActive: false
+	fromColumn: FactSales.BillAddressID
+	toColumn: DimAddress.AddressID
+
+relationship 84d0b38b-9013-5b35-3d29-f46cfa08c026
+	fromColumn: FactSales.CustomerID
+	toColumn: DimCustomer.CustomerID
+
+relationship a778aa48-f42d-7081-984c-a8e5c91995da
+	fromColumn: FactSales.FlagKey
+	toColumn: DimFlags.FlagKey
+
+relationship 72c5669e-3710-51ce-1911-130663cb3045
+	fromColumn: FactSales.ProductID
+	toColumn: DimProduct.ProductID
+
+relationship 4f66d182-e17d-41ff-c55e-6eeb96b977af
+	fromColumn: FactSales.OrderDate
+	toColumn: DimDate.Date
+
+relationship a5adf292-6423-5366-de78-ed4d61332c3c
+	isActive: false
+	fromColumn: FactSales.ShipDate
+	toColumn: DimDate.Date
+
+relationship d6334ec6-340d-4fd1-bd3f-909346acf9c4
+	isActive: false
+	fromColumn: FactSales.DueDate
+	toColumn: DimDate.Date
+

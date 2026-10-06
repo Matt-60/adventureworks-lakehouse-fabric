@@ -1,0 +1,97 @@
+table DimFlags
+	lineageTag: 194c78bd-6036-4a0c-9b81-297831c682fd
+	sourceLineageTag: [gold].[DimFlags]
+
+	column FlagKey
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 6e8179c3-c97c-41f9-9736-74bb20fe63d8
+		sourceLineageTag: FlagKey
+		summarizeBy: none
+		sourceColumn: FlagKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column Status
+		dataType: int64
+		formatString: 0
+		sourceProviderType: smallint
+		lineageTag: 2f6c5be7-d18d-47e2-8f0b-d695303ba9af
+		sourceLineageTag: Status
+		summarizeBy: none
+		sourceColumn: Status
+
+		annotation SummarizationSetBy = Automatic
+
+	column StatusName
+		dataType: string
+		sourceProviderType: varchar(11)
+		lineageTag: 6602784c-dc3f-47b0-aa03-40f99344b96c
+		sourceLineageTag: StatusName
+		summarizeBy: none
+		sourceColumn: StatusName
+
+		annotation SummarizationSetBy = Automatic
+
+	column OnlineOrderFlag
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 72722093-540b-4f16-bf4d-da8d7fef17ed
+		sourceLineageTag: OnlineOrderFlag
+		summarizeBy: none
+		sourceColumn: OnlineOrderFlag
+
+		annotation SummarizationSetBy = Automatic
+
+	column OrderChannel
+		dataType: string
+		sourceProviderType: varchar(7)
+		lineageTag: 0e9c39f5-1180-4f07-a9f8-8c4f679a7cb3
+		sourceLineageTag: OrderChannel
+		summarizeBy: none
+		sourceColumn: OrderChannel
+
+		annotation SummarizationSetBy = Automatic
+
+	column ShipMethod
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: d7295093-68c8-4dcf-938e-d42aba23edea
+		sourceLineageTag: ShipMethod
+		summarizeBy: none
+		sourceColumn: ShipMethod
+
+		annotation SummarizationSetBy = Automatic
+
+	column IsDiscounted
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 68564cf6-200f-4617-b102-d9c24bd84bab
+		sourceLineageTag: IsDiscounted
+		summarizeBy: none
+		sourceColumn: IsDiscounted
+
+		annotation SummarizationSetBy = Automatic
+
+	column PriceType
+		dataType: string
+		sourceProviderType: varchar(10)
+		lineageTag: bca2ec1d-bac1-46ad-b55c-d69431f655ba
+		sourceLineageTag: PriceType
+		summarizeBy: none
+		sourceColumn: PriceType
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DimFlags = entity
+		mode: directLake
+		source
+			entityName: DimFlags
+			schemaName: gold
+			expressionSource: DatabaseQuery
+
+	annotation PBI_ResultType = Table
+

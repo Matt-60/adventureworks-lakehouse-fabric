@@ -1,0 +1,64 @@
+table DimAddress
+	lineageTag: a60771d8-e6b6-4d7c-b0e2-adeeb3bf53b3
+	sourceLineageTag: [gold].[DimAddress]
+
+	column AddressID
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 1533d216-01c0-455c-b15c-f8522e4b7b94
+		sourceLineageTag: AddressID
+		summarizeBy: none
+		sourceColumn: AddressID
+
+		annotation SummarizationSetBy = Automatic
+
+	column City
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 298d5bf1-ac4e-4997-b877-8b4512f75023
+		sourceLineageTag: City
+		summarizeBy: none
+		sourceColumn: City
+
+		annotation SummarizationSetBy = Automatic
+
+	column StateProvince
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: de68b12c-7f06-47a0-a997-d489608e3dd3
+		sourceLineageTag: StateProvince
+		summarizeBy: none
+		sourceColumn: StateProvince
+
+		annotation SummarizationSetBy = Automatic
+
+	column CountryRegion
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 4e48ce70-42c8-49e2-9458-1a6c2a02b54d
+		sourceLineageTag: CountryRegion
+		summarizeBy: none
+		sourceColumn: CountryRegion
+
+		annotation SummarizationSetBy = Automatic
+
+	column PostalCode
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 3ea2a77b-ed7a-49de-b9c7-2380c559f5e9
+		sourceLineageTag: PostalCode
+		summarizeBy: none
+		sourceColumn: PostalCode
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DimAddress = entity
+		mode: directLake
+		source
+			entityName: DimAddress
+			schemaName: gold
+			expressionSource: DatabaseQuery
+
+	annotation PBI_ResultType = Table
+

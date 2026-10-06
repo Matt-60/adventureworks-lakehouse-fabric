@@ -1,0 +1,167 @@
+{
+  "properties": {
+    "activities": [
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "b1a92c04-ab86-adff-46da-e2dd58b21975",
+          "workspaceId": "00000000-0000-0000-0000-000000000000"
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Sliver cleaning",
+        "dependsOn": [
+          {
+            "activity": "Bronze incremental load",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "InvokePipeline",
+        "typeProperties": {
+          "parameters": {
+            "tables": {
+              "value": "@pipeline().parameters.tables",
+              "type": "Expression"
+            }
+          },
+          "waitOnCompletion": true,
+          "workspaceId": "00000000-0000-0000-0000-000000000000",
+          "pipelineId": "f20bb49e-209f-4353-8e2e-ac9c674a17fb",
+          "operationType": "InvokeFabricPipeline"
+        },
+        "externalReferences": {
+          "connection": "6eb7c932-dae9-4e6e-9172-2ace61bd5b7b"
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Bronze incremental load",
+        "dependsOn": []
+      },
+      {
+        "type": "SqlServerStoredProcedure",
+        "typeProperties": {
+          "storedProcedureName": "[gold].[usp_load_gold]"
+        },
+        "linkedService": {
+          "name": "AW Data Warehouse",
+          "properties": {
+            "type": "DataWarehouse",
+            "typeProperties": {
+              "artifactId": "32c4b90e-4d9e-b506-483d-11237b2ae04d",
+              "endpoint": "tybdx53i55te5du2fiyuw6iljm-2bn546xm5gmuthoadx5ghprahq.datawarehouse.fabric.microsoft.com",
+              "workspaceId": "00000000-0000-0000-0000-000000000000"
+            },
+            "annotations": []
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Gold star schema",
+        "dependsOn": [
+          {
+            "activity": "Sliver cleaning",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      }
+    ],
+    "parameters": {
+      "tables": {
+        "type": "array",
+        "defaultValue": [
+          {
+            "schema": "SalesLT",
+            "table": "SalesOrderHeader",
+            "sink": "SalesOrderHeader",
+            "key": "SalesOrderID",
+            "load_type": "incremental"
+          },
+          {
+            "schema": "SalesLT",
+            "table": "SalesOrderDetail",
+            "sink": "SalesOrderDetail",
+            "key": "SalesOrderDetailID",
+            "load_type": "incremental"
+          },
+          {
+            "schema": "SalesLT",
+            "table": "Customer",
+            "sink": "Customer",
+            "key": "CustomerID",
+            "load_type": "incremental"
+          },
+          {
+            "schema": "SalesLT",
+            "table": "CustomerAddress",
+            "sink": "CustomerAddress",
+            "key": "CustomerID",
+            "load_type": "full"
+          },
+          {
+            "schema": "SalesLT",
+            "table": "Address",
+            "sink": "Address",
+            "key": "AddressID",
+            "load_type": "full"
+          },
+          {
+            "schema": "SalesLT",
+            "table": "Product",
+            "sink": "Product",
+            "key": "ProductID",
+            "load_type": "full"
+          },
+          {
+            "schema": "SalesLT",
+            "table": "ProductCategory",
+            "sink": "ProductCategory",
+            "key": "ProductCategoryID",
+            "load_type": "full"
+          },
+          {
+            "schema": "SalesLT",
+            "table": "ProductModel",
+            "sink": "ProductModel",
+            "key": "ProductModelID",
+            "load_type": "full"
+          },
+          {
+            "schema": "SalesLT",
+            "table": "ProductDescription",
+            "sink": "ProductDescription",
+            "key": "ProductDescriptionID",
+            "load_type": "full"
+          },
+          {
+            "schema": "SalesLT",
+            "table": "ProductModelProductDescription",
+            "sink": "ProductModelProductDescription",
+            "key": "ProductModelID",
+            "load_type": "full"
+          }
+        ]
+      }
+    }
+  }
+}
