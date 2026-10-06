@@ -14,7 +14,7 @@
           "secureInput": false,
           "secureOutput": false
         },
-        "name": "Sliver cleaning",
+        "name": "Silver cleaning",
         "dependsOn": [
           {
             "activity": "Bronze incremental load",
@@ -27,12 +27,7 @@
       {
         "type": "InvokePipeline",
         "typeProperties": {
-          "parameters": {
-            "tables": {
-              "value": "@pipeline().parameters.tables",
-              "type": "Expression"
-            }
-          },
+          "parameters": {},
           "waitOnCompletion": true,
           "workspaceId": "00000000-0000-0000-0000-000000000000",
           "pipelineId": "f20bb49e-209f-4353-8e2e-ac9c674a17fb",
@@ -78,90 +73,13 @@
         "name": "Gold star schema",
         "dependsOn": [
           {
-            "activity": "Sliver cleaning",
+            "activity": "Silver cleaning",
             "dependencyConditions": [
               "Succeeded"
             ]
           }
         ]
       }
-    ],
-    "parameters": {
-      "tables": {
-        "type": "array",
-        "defaultValue": [
-          {
-            "schema": "SalesLT",
-            "table": "SalesOrderHeader",
-            "sink": "SalesOrderHeader",
-            "key": "SalesOrderID",
-            "load_type": "incremental"
-          },
-          {
-            "schema": "SalesLT",
-            "table": "SalesOrderDetail",
-            "sink": "SalesOrderDetail",
-            "key": "SalesOrderDetailID",
-            "load_type": "incremental"
-          },
-          {
-            "schema": "SalesLT",
-            "table": "Customer",
-            "sink": "Customer",
-            "key": "CustomerID",
-            "load_type": "incremental"
-          },
-          {
-            "schema": "SalesLT",
-            "table": "CustomerAddress",
-            "sink": "CustomerAddress",
-            "key": "CustomerID",
-            "load_type": "full"
-          },
-          {
-            "schema": "SalesLT",
-            "table": "Address",
-            "sink": "Address",
-            "key": "AddressID",
-            "load_type": "full"
-          },
-          {
-            "schema": "SalesLT",
-            "table": "Product",
-            "sink": "Product",
-            "key": "ProductID",
-            "load_type": "full"
-          },
-          {
-            "schema": "SalesLT",
-            "table": "ProductCategory",
-            "sink": "ProductCategory",
-            "key": "ProductCategoryID",
-            "load_type": "full"
-          },
-          {
-            "schema": "SalesLT",
-            "table": "ProductModel",
-            "sink": "ProductModel",
-            "key": "ProductModelID",
-            "load_type": "full"
-          },
-          {
-            "schema": "SalesLT",
-            "table": "ProductDescription",
-            "sink": "ProductDescription",
-            "key": "ProductDescriptionID",
-            "load_type": "full"
-          },
-          {
-            "schema": "SalesLT",
-            "table": "ProductModelProductDescription",
-            "sink": "ProductModelProductDescription",
-            "key": "ProductModelID",
-            "load_type": "full"
-          }
-        ]
-      }
-    }
+    ]
   }
 }

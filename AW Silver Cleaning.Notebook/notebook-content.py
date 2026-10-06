@@ -26,8 +26,8 @@
 
 # CELL ********************
 
-BRONZE_SCHEMA = "`AW E-commerce`.AW_Data_Product.bronze"
-SILVER_SCHEMA = "`AW E-commerce`.AW_Data_Product.silver"
+BRONZE_SCHEMA = "`AW B2B wholesale`.AW_Data_Product.bronze"
+SILVER_SCHEMA = "`AW B2B wholesale`.AW_Data_Product.silver"
 
 # METADATA ********************
 
@@ -62,6 +62,10 @@ print(f"  product  : {df_product.count():,} rows")
 # META   "language": "python",
 # META   "language_group": "synapse_pyspark"
 # META }
+
+# MARKDOWN ********************
+
+# # CELL 3 — Silver layer
 
 # CELL ********************
 
@@ -118,6 +122,10 @@ product_model    = df_model.select("ProductModelID", "Name")
 # META   "language": "python",
 # META   "language_group": "synapse_pyspark"
 # META }
+
+# MARKDOWN ********************
+
+# # CELL 4 — Silver tables tests
 
 # CELL ********************
 
@@ -188,6 +196,10 @@ print("✅ All Silver data quality checks passed")
 # META   "language_group": "synapse_pyspark"
 # META }
 
+# MARKDOWN ********************
+
+# # CELL 5 — Silver layer upload
+
 # CELL ********************
 
 silver_tables = {
@@ -210,6 +222,10 @@ for name, df in silver_tables.items():
 # META   "language": "python",
 # META   "language_group": "synapse_pyspark"
 # META }
+
+# MARKDOWN ********************
+
+# # CELL 6 — OBT
 
 # CELL ********************
 
@@ -274,7 +290,7 @@ assert obt_rows == detail_rows, f"OBT fan-out: {obt_rows} rows vs {detail_rows} 
 
 (obt.write.format("delta").mode("overwrite")
     .option("overwriteSchema", "true")
-    .saveAsTable(f"{SILVER_SCHEMA}.OBT_Sales"))
+    .saveAsTable(f"{SILVER_SCHEMA}.OBTSales"))
 
 print(f"✅ OBT_Sales written: {obt_rows:,} rows × {len(obt.columns)} columns")
 
